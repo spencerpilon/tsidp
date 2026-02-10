@@ -1,0 +1,25 @@
+name: tsidp
+x-arcane:
+  icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/tailscale.webp
+  urls:
+    - https://github.com/tailscale/tsidp
+
+services:
+  server:
+    container_name: tsidp
+    environment:
+      - TAILSCALE_USE_WIP_CODE=1 # tsidp is experimental - needed while version <1.0.0
+      - TS_STATE_DIR=/data # store persistent tsnet and tsidp state
+      - TS_HOSTNAME=idp # Hostname on tailnet (becomes idp.your-tailnet.ts.net)
+      - TSIDP_ENABLE_STS=1 # Enable OAuth token exchange
+      # Optional: Tailscale auth key for automatic node registration
+      - TS_AUTHKEY=${TS_AUTHKEY} # tskey-auth-xxxxx
+    image: ghcr.io/tailscale/tsidp:latest
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - data:/data
+    labels:
+      com.getarcaneapp.arcane.icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/webp/tailscale.webp
+volumes:
+  data:
